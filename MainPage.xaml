@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:maryna_hladka2.Converters"
+             x:Class="maryna_hladka2.Views.MainPage"
+             Title="Особистий кабінет студента">
+
+	<ContentPage.Resources>
+		<converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+	</ContentPage.Resources>
+
+	<ScrollView>
+		<VerticalStackLayout Padding="20" Spacing="12">
+
+			<Label Text="Особистий кабінет студента" FontSize="22" FontAttributes="Bold" />
+
+			<!-- Двостороння прив'язка (TwoWay) -->
+			<Entry Text="{Binding FullName, Mode=TwoWay}"
+                   Placeholder="ПІБ студента" />
+
+			<Entry Text="{Binding Group, Mode=TwoWay}"
+                   Placeholder="Група" />
+
+			<Label Text="{Binding AverageScore, StringFormat='Середній бал: {0:F2}'}" />
+			<Slider Minimum="0" Maximum="5"
+                    Value="{Binding AverageScore, Mode=TwoWay}" />
+
+			<!-- Одностороння прив'язка (OneWay) + автоформатований текст -->
+			<Label Text="{Binding Greeting}"
+                   FontSize="18"
+                   TextColor="{Binding IsHighAverage, Converter={StaticResource BoolToColorConverter}}" />
+
+			<Button Text="Додати студента"
+                    Command="{Binding AddStudentCommand}" />
+
+			<BoxView HeightRequest="1" BackgroundColor="LightGray" Margin="0,10" />
+
+			<Label Text="Список студентів" FontAttributes="Bold" />
+
+			<CollectionView ItemsSource="{Binding Students}">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<Grid Padding="0,4" ColumnDefinitions="*,Auto,Auto">
+							<Label Grid.Column="0" Text="{Binding FullName}" />
+							<Label Grid.Column="1" Text="{Binding Group}" Margin="10,0" />
+							<Label Grid.Column="2" Text="{Binding AverageScore, StringFormat='{0:F2}'}" />
+						</Grid>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>
