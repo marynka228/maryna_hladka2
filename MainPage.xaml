@@ -11,8 +11,18 @@
 
 	<ScrollView>
 		<VerticalStackLayout Padding="20" Spacing="12">
+            <HorizontalStackLayout Spacing="8">
+                <Label Text="{Binding FullName}" />
+                <Label Text="{Binding Group}" />
+                <Label Text="{Binding AverageScore, StringFormat='{0:F2}'}" />
+                <Button Text="Детальніше"
+            FontSize="12"
+            Padding="8,2"
+            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenDetailsCommand}"
+            CommandParameter="{Binding .}" />
+            </HorizontalStackLayout>
 
-			<Label Text="Особистий кабінет студента" FontSize="22" FontAttributes="Bold" />
+            <Label Text="Особистий кабінет студента" FontSize="22" FontAttributes="Bold" />
 
 			<!-- Двостороння прив'язка (TwoWay) -->
 			<Entry Text="{Binding FullName, Mode=TwoWay}"
@@ -39,14 +49,19 @@
 
 			<CollectionView ItemsSource="{Binding Students}">
 				<CollectionView.ItemTemplate>
-					<DataTemplate>
-						<Grid Padding="0,4" ColumnDefinitions="*,Auto,Auto">
-							<Label Grid.Column="0" Text="{Binding FullName}" />
-							<Label Grid.Column="1" Text="{Binding Group}" Margin="10,0" />
-							<Label Grid.Column="2" Text="{Binding AverageScore, StringFormat='{0:F2}'}" />
-						</Grid>
-					</DataTemplate>
-				</CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <HorizontalStackLayout Spacing="8" Padding="0,4">
+                            <Label Text="{Binding FullName}" VerticalOptions="Center" />
+                            <Label Text="{Binding Group}" VerticalOptions="Center" />
+                            <Label Text="{Binding AverageScore, StringFormat='{0:F2}'}" VerticalOptions="Center" />
+                            <Button Text="Детальніше"
+                FontSize="12"
+                Padding="8,2"
+                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenDetailsCommand}"
+                CommandParameter="{Binding .}" />
+                        </HorizontalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
 			</CollectionView>
 
 		</VerticalStackLayout>

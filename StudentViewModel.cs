@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using maryna_hladka2.Models;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace maryna_hladka2.ViewModels
 {
@@ -67,9 +68,33 @@ namespace maryna_hladka2.ViewModels
 
         public ICommand AddStudentCommand { get; }
 
+        public ICommand OpenDetailsCommand { get; }
+
         public StudentViewModel()
         {
             AddStudentCommand = new RelayCommand(AddStudent, CanAddStudent);
+            OpenDetailsCommand = new Command<Student>(async (student) => await OpenDetailsAsync(student));
+
+            WeakReferenceMessenger.Default.Register<StudentUpdatedMessage>(this, (recipient, message) =>
+            {
+                var index = Students.IndexOf(message.OriginalStudent);
+                if (index >= 0)
+                {
+                    Students[index] = message.UpdatedStudent;
+                }
+            });
+        }
+
+        private async Task OpenDetailsAsync(Student? student)
+        {
+            if (student is null) return;
+
+            var parameters = new Dictionary<string, object>
+    {
+        { "SelectedStudent", student }
+    };
+
+            await Shell.Current.GoToAsync("studentdetail", parameters);
         }
 
         private void AddStudent()
