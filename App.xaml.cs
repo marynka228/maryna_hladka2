@@ -1,17 +1,48 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Logging;
+using maryna_hladka2.Services;
 
 namespace maryna_hladka2
 {
     public partial class App : Application
     {
-        public App()
+        private readonly ILogger<App> _logger;
+        private readonly IAppStateService _appState;
+        private readonly IThemeService _theme;
+
+        public App(ILogger<App> logger, IAppStateService appState, IThemeService theme)
         {
             InitializeComponent();
+            _logger = logger;
+            _appState = appState;
+            _theme = theme;
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new AppShell());
+            _theme.ApplyStoredTheme();
+
+            var window = new Window(new AppShell());
+
+            window.Created += (s, e) => _logger.LogInformation("Window.Created: вікно створено");
+            window.Activated += (s, e) => _logger.LogInformation("Window.Activated: застосунок на передньому плані");
+            window.Deactivated += (s, e) => _logger.LogInformation("Window.Deactivated: втрачено фокус");
+
+            window.Stopped += (s, e) =>
+            {
+                _appState.BackgroundCount++;
+                _logger.LogInformation("Window.Stopped: застосунок згорнуто");
+                _appState.SaveToPreferences();
+            };
+
+            window.Resumed += (s, e) =>
+            {
+                _appState.ResumeCount++;
+                _logger.LogInformation("Window.Resumed: застосунок повернувся");
+            };
+
+            window.Destroying += (s, e) => _logger.LogInformation("Window.Destroying: звільнення ресурсів");
+
+            return window;
         }
     }
 }

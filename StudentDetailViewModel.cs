@@ -57,6 +57,7 @@ namespace maryna_hladka2.ViewModels
 
             var updated = new Student
             {
+                Id = _originalStudent.Id,
                 FullName = FullName,
                 Group = Group,
                 AverageScore = AverageScore
