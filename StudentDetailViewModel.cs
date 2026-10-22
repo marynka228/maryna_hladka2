@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using maryna_hladka2.Models;
+using maryna_hladka2.Services;
 
 namespace maryna_hladka2.ViewModels
 {
     public class StudentDetailViewModel : IQueryAttributable, INotifyPropertyChanged
     {
+        private readonly IStudentRepository _repository;
         private Student? _originalStudent;
 
         private string _fullName = string.Empty;
@@ -34,8 +35,9 @@ namespace maryna_hladka2.ViewModels
         public ICommand GoBackCommand { get; }
         public ICommand SaveCommand { get; }
 
-        public StudentDetailViewModel()
+        public StudentDetailViewModel(IStudentRepository repository)
         {
+            _repository = repository;
             GoBackCommand = new Command(async () => await Shell.Current.GoToAsync(".."));
             SaveCommand = new Command(async () => await SaveAsync());
         }
@@ -55,15 +57,11 @@ namespace maryna_hladka2.ViewModels
         {
             if (_originalStudent is null) return;
 
-            var updated = new Student
-            {
-                Id = _originalStudent.Id,
-                FullName = FullName,
-                Group = Group,
-                AverageScore = AverageScore
-            };
+            _originalStudent.FullName = FullName;
+            _originalStudent.Group = Group;
+            _originalStudent.AverageScore = AverageScore;
 
-            WeakReferenceMessenger.Default.Send(new StudentUpdatedMessage(_originalStudent, updated));
+            await _repository.SaveAsync(_originalStudent);   // Id != 0, тому виконується Update
 
             await Shell.Current.GoToAsync("..");
         }

@@ -5,20 +5,20 @@ namespace maryna_hladka2.Services
     // Підтримуване посилання: studentapp://student/{id}
     public class DeepLinkService : IDeepLinkService
     {
-        private readonly IStudentService _students;
+        private readonly IStudentRepository _repository;
         private readonly ILogger<DeepLinkService> _logger;
         private Uri? _pending;
 
-        public DeepLinkService(IStudentService students, ILogger<DeepLinkService> logger)
+        public DeepLinkService(IStudentRepository repository, ILogger<DeepLinkService> logger)
         {
-            _students = students;
+            _repository = repository;
             _logger = logger;
         }
 
         public void Handle(Uri uri)
         {
             _logger.LogInformation("Отримано deep link: {Uri}", uri);
-            _pending = uri; // на холодному старті Shell ще немає, тому відкладаємо
+            _pending = uri;
             MainThread.BeginInvokeOnMainThread(async () => await TryProcessPendingAsync());
         }
 
@@ -43,8 +43,7 @@ namespace maryna_hladka2.Services
                 return;
             }
 
-            await _students.EnsureLoadedAsync();
-            var student = _students.FindById(id);
+            var student = await _repository.GetByIdAsync(id);
             if (student is null)
             {
                 await shell.DisplayAlert("Deep link", $"Студента з Id={id} не знайдено", "OK");

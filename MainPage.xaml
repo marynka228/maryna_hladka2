@@ -59,6 +59,12 @@
                 Padding="8,2"
                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenDetailsCommand}"
                 CommandParameter="{Binding .}" />
+                            <Button Text="Видалити"
+                                FontSize="12"
+                                Padding="8,2"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCommand}"
+                                CommandParameter="{Binding .}" />
+                            
                         </HorizontalStackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

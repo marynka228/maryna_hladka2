@@ -3,9 +3,9 @@ namespace maryna_hladka2;
 
 public partial class StudentDetailPage : ContentPage
 {
-	public StudentDetailPage()
-	{
-		InitializeComponent();
-        BindingContext = new StudentDetailViewModel();
+    public StudentDetailPage(StudentDetailViewModel vm)
+    {
+        InitializeComponent();
+        BindingContext = vm;
     }
 }

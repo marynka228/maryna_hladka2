@@ -17,14 +17,14 @@ namespace maryna_hladka2
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
-            builder.Services.AddSingleton<IAppStateService, AppStateService>();
+            builder.Services.AddSingleton<IStudentRepository, StudentRepository>();
+
             builder.Services.AddTransient<StudentViewModel>();
-            builder.Services.AddTransient<MainPage>();
-            builder.Services.AddSingleton<IThemeService, ThemeService>();
+            builder.Services.AddTransient<StudentDetailViewModel>();
             builder.Services.AddTransient<SettingsViewModel>();
+            builder.Services.AddTransient<MainPage>();
+            builder.Services.AddTransient<StudentDetailPage>();
             builder.Services.AddTransient<SettingsPage>();
-            builder.Services.AddSingleton<IStudentService, StudentService>();
-            builder.Services.AddSingleton<IDeepLinkService, DeepLinkService>();
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
