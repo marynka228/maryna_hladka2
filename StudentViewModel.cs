@@ -3,14 +3,16 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using maryna_hladka2.Models;
+using maryna_hladka2.Services;
 using CommunityToolkit.Mvvm.Messaging;
 
 namespace maryna_hladka2.ViewModels
 {
     public class StudentViewModel : INotifyPropertyChanged
     {
-        // Інкапсульований об'єкт Model
         private readonly Student _student = new();
+        private readonly IAppStateService _appState;
+        private readonly IStudentService _studentService;
 
         public string FullName
         {
@@ -21,9 +23,9 @@ namespace maryna_hladka2.ViewModels
                 {
                     _student.FullName = value;
                     OnPropertyChanged();
-                    // Текст ПІБ змінився - треба оновити і "вітання", і CanExecute кнопки
                     OnPropertyChanged(nameof(Greeting));
                     (AddStudentCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                    SyncDraft();
                 }
             }
         }
@@ -38,6 +40,7 @@ namespace maryna_hladka2.ViewModels
                     _student.Group = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(Greeting));
+                    SyncDraft();
                 }
             }
         }
@@ -51,29 +54,35 @@ namespace maryna_hladka2.ViewModels
                 {
                     _student.AverageScore = value;
                     OnPropertyChanged();
-                    // Від AverageScore залежить колір/індикація - треба сповістити і про неї
                     OnPropertyChanged(nameof(IsHighAverage));
+                    SyncDraft();
                 }
             }
         }
 
-        // Обчислювана властивість - альтернатива IValueConverter
-        // (для одностороннього індикатора "AverageScore >= 4.0")
         public bool IsHighAverage => AverageScore >= 4.0;
 
-        // Форматоване вітання для Label з OneWay-прив'язкою
         public string Greeting => $"Студент: {FullName}, група {Group}";
 
-        public ObservableCollection<Student> Students { get; } = new();
+        // Список тепер живе в спільному сервісі
+        public ObservableCollection<Student> Students => _studentService.Students;
 
         public ICommand AddStudentCommand { get; }
-
         public ICommand OpenDetailsCommand { get; }
+        public ICommand LoadCommand { get; }
 
-        public StudentViewModel()
+        public StudentViewModel(IAppStateService appState, IStudentService studentService)
         {
+            _appState = appState;
+            _studentService = studentService;
+
+            _student.FullName = _appState.Draft.FullName;
+            _student.Group = _appState.Draft.Group;
+            _student.AverageScore = _appState.Draft.AverageScore;
+
             AddStudentCommand = new RelayCommand(AddStudent, CanAddStudent);
             OpenDetailsCommand = new Command<Student>(async (student) => await OpenDetailsAsync(student));
+            LoadCommand = new Command(async () => await _studentService.EnsureLoadedAsync());
 
             WeakReferenceMessenger.Default.Register<StudentUpdatedMessage>(this, (recipient, message) =>
             {
@@ -85,14 +94,21 @@ namespace maryna_hladka2.ViewModels
             });
         }
 
+        private void SyncDraft()
+        {
+            _appState.Draft.FullName = _student.FullName;
+            _appState.Draft.Group = _student.Group;
+            _appState.Draft.AverageScore = _student.AverageScore;
+        }
+
         private async Task OpenDetailsAsync(Student? student)
         {
             if (student is null) return;
 
             var parameters = new Dictionary<string, object>
-    {
-        { "SelectedStudent", student }
-    };
+            {
+                { "SelectedStudent", student }
+            };
 
             await Shell.Current.GoToAsync("studentdetail", parameters);
         }
@@ -101,12 +117,12 @@ namespace maryna_hladka2.ViewModels
         {
             Students.Add(new Student
             {
+                Id = _studentService.NextId(),
                 FullName = FullName,
                 Group = Group,
                 AverageScore = AverageScore
             });
 
-            // Очищення полів вводу після додавання
             FullName = string.Empty;
             Group = string.Empty;
             AverageScore = 0;
