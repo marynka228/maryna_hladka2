@@ -4,23 +4,31 @@
              x:Class="maryna_hladka2.StudentDetailPage"
              Title="Деталі студента">
 
-    <VerticalStackLayout Padding="20" Spacing="14">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="14">
 
-        <Label Text="ПІБ:" FontAttributes="Bold" />
-        <Label Text="{Binding FullName}" />
+            <Label Text="ПІБ:" FontAttributes="Bold" />
+            <Label Text="{Binding FullName}" />
 
-        <Label Text="Група:" FontAttributes="Bold" />
-        <Label Text="{Binding Group}" />
+            <Label Text="Група:" FontAttributes="Bold" />
+            <Label Text="{Binding Group}" />
 
-        <Label Text="Середній бал:" FontAttributes="Bold" />
-        <Stepper Minimum="0" Maximum="5" Increment="0.1"
-                 Value="{Binding AverageScore, Mode=TwoWay}" />
-        <Label Text="{Binding AverageScore, StringFormat='Поточне значення: {0:F1}'}" />
+            <Label Text="Середній бал:" FontAttributes="Bold" />
+            <Stepper Minimum="0" Maximum="5" Increment="0.1"
+                     Value="{Binding AverageScore, Mode=TwoWay}" />
+            <Label Text="{Binding AverageScore, StringFormat='Поточне значення: {0:F1}'}" />
 
-        <HorizontalStackLayout Spacing="10" Margin="0,20,0,0">
-            <Button Text="Зберегти" Command="{Binding SaveCommand}" />
-            <Button Text="Назад" Command="{Binding GoBackCommand}" />
-        </HorizontalStackLayout>
+            <Label Text="Номер документа:" FontAttributes="Bold" />
+            <Entry Text="{Binding DocumentNumber, Mode=TwoWay}" Placeholder="Номер документа" />
 
-    </VerticalStackLayout>
+            <Label Text="У базі збережено (зашифровано):" FontAttributes="Bold" />
+            <Label Text="{Binding StoredEncrypted}" LineBreakMode="CharacterWrap" FontSize="12" />
+
+            <HorizontalStackLayout Spacing="10" Margin="0,20,0,0">
+                <Button Text="Зберегти" Command="{Binding SaveCommand}" />
+                <Button Text="Назад" Command="{Binding GoBackCommand}" />
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

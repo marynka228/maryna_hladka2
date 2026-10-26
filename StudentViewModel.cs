@@ -59,6 +59,19 @@ namespace maryna_hladka2.ViewModels
             }
         }
 
+        public string DocumentNumber
+        {
+            get => _student.DocumentNumber;
+            set
+            {
+                if (_student.DocumentNumber != value)
+                {
+                    _student.DocumentNumber = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public bool IsHighAverage => AverageScore >= 4.0;
 
         public string Greeting => $"Студент: {FullName}, група {Group}";
@@ -92,7 +105,6 @@ namespace maryna_hladka2.ViewModels
             LoadCommand = new Command(async () => await LoadAsync());
         }
 
-        // Читання з БД: очищаємо колекцію і наповнюємо її заново
         private async Task LoadAsync()
         {
             if (IsBusy) return;
@@ -116,15 +128,17 @@ namespace maryna_hladka2.ViewModels
             {
                 FullName = FullName,
                 Group = Group,
-                AverageScore = AverageScore
+                AverageScore = AverageScore,
+                DocumentNumber = DocumentNumber
             };
 
-            await _repository.SaveAsync(student);   // після Insert поле Id заповнюється автоматично
+            await _repository.SaveAsync(student);
             Students.Add(student);
 
             FullName = string.Empty;
             Group = string.Empty;
             AverageScore = 0;
+            DocumentNumber = string.Empty;
         }
 
         private async Task DeleteAsync(Student? student)

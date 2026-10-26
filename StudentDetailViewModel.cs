@@ -32,6 +32,21 @@ namespace maryna_hladka2.ViewModels
             set { if (_averageScore != value) { _averageScore = value; OnPropertyChanged(); } }
         }
 
+        private string _documentNumber = string.Empty;
+        public string DocumentNumber
+        {
+            get => _documentNumber;
+            set { if (_documentNumber != value) { _documentNumber = value; OnPropertyChanged(); } }
+        }
+
+        // Те, що реально лежить у БД (для демонстрації шифрування у звіті)
+        private string _storedEncrypted = string.Empty;
+        public string StoredEncrypted
+        {
+            get => _storedEncrypted;
+            set { if (_storedEncrypted != value) { _storedEncrypted = value; OnPropertyChanged(); } }
+        }
+
         public ICommand GoBackCommand { get; }
         public ICommand SaveCommand { get; }
 
@@ -50,6 +65,10 @@ namespace maryna_hladka2.ViewModels
                 FullName = student.FullName;
                 Group = student.Group;
                 AverageScore = student.AverageScore;
+                DocumentNumber = student.DocumentNumber;
+                StoredEncrypted = string.IsNullOrEmpty(student.DocumentNumberEncrypted)
+                    ? "(порожньо)"
+                    : student.DocumentNumberEncrypted;
             }
         }
 
@@ -60,8 +79,9 @@ namespace maryna_hladka2.ViewModels
             _originalStudent.FullName = FullName;
             _originalStudent.Group = Group;
             _originalStudent.AverageScore = AverageScore;
+            _originalStudent.DocumentNumber = DocumentNumber;
 
-            await _repository.SaveAsync(_originalStudent);   // Id != 0, тому виконується Update
+            await _repository.SaveAsync(_originalStudent);
 
             await Shell.Current.GoToAsync("..");
         }

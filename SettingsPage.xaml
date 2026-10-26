@@ -4,28 +4,43 @@
              x:Class="maryna_hladka2.Views.SettingsPage"
              Title="Налаштування">
 
-    <VerticalStackLayout Padding="20" Spacing="16">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
 
-        <Label Text="Вигляд" FontSize="22" FontAttributes="Bold" />
+            <Label Text="Вигляд" FontSize="22" FontAttributes="Bold" />
 
-        <HorizontalStackLayout Spacing="12">
-            <Label Text="Темна тема" VerticalOptions="Center" />
-            <Switch IsToggled="{Binding IsDarkTheme, Mode=TwoWay}" />
-        </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="12">
+                <Label Text="Темна тема" VerticalOptions="Center" />
+                <Switch IsToggled="{Binding IsDarkTheme, Mode=TwoWay}" />
+            </HorizontalStackLayout>
 
-        <BoxView HeightRequest="1" Color="Gray" Margin="0,10" />
+            <BoxView HeightRequest="1" Color="Gray" Margin="0,10" />
 
-        <Label Text="Стан сесії (IAppStateService)" FontAttributes="Bold" />
-        <Label Text="{Binding SessionInfo}" />
-        <BoxView HeightRequest="1" Color="Gray" Margin="0,10" />
+            <Label Text="Синхронізація" FontSize="22" FontAttributes="Bold" />
 
-        <Label Text="Тест deep link" FontAttributes="Bold" />
-        <Label Text="Id студента:" />
-        <Entry Text="{Binding DeepLinkStudentId, Mode=TwoWay}"
-       Keyboard="Numeric"
-       Placeholder="Наприклад, 1" />
-        <Button Text="Відкрити студента за посиланням"
-        Command="{Binding TestDeepLinkCommand}" />
-    </VerticalStackLayout>
-    
+            <HorizontalStackLayout Spacing="12">
+                <Label Text="Імітувати офлайн" VerticalOptions="Center" />
+                <Switch IsToggled="{Binding IsOffline, Mode=TwoWay}" />
+            </HorizontalStackLayout>
+
+            <Label Text="{Binding SyncInfo}" />
+            <Button Text="Синхронізувати зараз" Command="{Binding SyncNowCommand}" />
+
+            <BoxView HeightRequest="1" Color="Gray" Margin="0,10" />
+
+            <Label Text="Стан сесії (IAppStateService)" FontAttributes="Bold" />
+            <Label Text="{Binding SessionInfo}" />
+
+            <BoxView HeightRequest="1" Color="Gray" Margin="0,10" />
+
+            <Label Text="Тест deep link" FontAttributes="Bold" />
+            <Label Text="Номер студента в списку (1 = перший):" />
+            <Entry Text="{Binding DeepLinkStudentId, Mode=TwoWay}"
+                   Keyboard="Numeric"
+                   Placeholder="Наприклад, 1" />
+            <Button Text="Відкрити студента за посиланням"
+                    Command="{Binding TestDeepLinkCommand}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

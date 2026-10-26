@@ -8,18 +8,21 @@ namespace maryna_hladka2
         private readonly ILogger<App> _logger;
         private readonly IAppStateService _appState;
         private readonly IThemeService _theme;
+        private readonly ISyncService _sync;
 
-        public App(ILogger<App> logger, IAppStateService appState, IThemeService theme)
+        public App(ILogger<App> logger, IAppStateService appState, IThemeService theme, ISyncService sync)
         {
             InitializeComponent();
             _logger = logger;
             _appState = appState;
             _theme = theme;
+            _sync = sync;
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
             _theme.ApplyStoredTheme();
+            _sync.Start();   // запускаємо стеження за мережею та чергою
 
             var window = new Window(new AppShell());
 

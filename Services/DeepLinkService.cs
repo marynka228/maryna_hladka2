@@ -43,10 +43,12 @@ namespace maryna_hladka2.Services
                 return;
             }
 
-            var student = await _repository.GetByIdAsync(id);
+            // id тут означає порядковий номер у списку (1 = перший студент)
+            var all = (await _repository.GetAllAsync()).OrderBy(s => s.Id).ToList();
+            var student = (id >= 1 && id <= all.Count) ? all[id - 1] : null;
             if (student is null)
             {
-                await shell.DisplayAlert("Deep link", $"Студента з Id={id} не знайдено", "OK");
+                await shell.DisplayAlert("Deep link", $"Студента з номером {id} не знайдено", "OK");
                 return;
             }
 

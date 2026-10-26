@@ -5,71 +5,55 @@
              x:Class="maryna_hladka2.Views.MainPage"
              Title="Особистий кабінет студента">
 
-	<ContentPage.Resources>
-		<converters:BoolToColorConverter x:Key="BoolToColorConverter" />
-	</ContentPage.Resources>
+    <ContentPage.Resources>
+        <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+    </ContentPage.Resources>
 
-	<ScrollView>
-		<VerticalStackLayout Padding="20" Spacing="12">
-            <HorizontalStackLayout Spacing="8">
-                <Label Text="{Binding FullName}" />
-                <Label Text="{Binding Group}" />
-                <Label Text="{Binding AverageScore, StringFormat='{0:F2}'}" />
-                <Button Text="Детальніше"
-            FontSize="12"
-            Padding="8,2"
-            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenDetailsCommand}"
-            CommandParameter="{Binding .}" />
-            </HorizontalStackLayout>
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="12">
 
             <Label Text="Особистий кабінет студента" FontSize="22" FontAttributes="Bold" />
 
-			<!-- Двостороння прив'язка (TwoWay) -->
-			<Entry Text="{Binding FullName, Mode=TwoWay}"
-                   Placeholder="ПІБ студента" />
+            <Entry Text="{Binding FullName, Mode=TwoWay}" Placeholder="ПІБ студента" />
+            <Entry Text="{Binding Group, Mode=TwoWay}" Placeholder="Група" />
+            <Entry Text="{Binding DocumentNumber, Mode=TwoWay}" Placeholder="Номер документа (шифрується в БД)" />
 
-			<Entry Text="{Binding Group, Mode=TwoWay}"
-                   Placeholder="Група" />
+            <Label Text="{Binding AverageScore, StringFormat='Середній бал: {0:F2}'}" />
+            <Slider Minimum="0" Maximum="5" Value="{Binding AverageScore, Mode=TwoWay}" />
 
-			<Label Text="{Binding AverageScore, StringFormat='Середній бал: {0:F2}'}" />
-			<Slider Minimum="0" Maximum="5"
-                    Value="{Binding AverageScore, Mode=TwoWay}" />
-
-			<!-- Одностороння прив'язка (OneWay) + автоформатований текст -->
-			<Label Text="{Binding Greeting}"
+            <Label Text="{Binding Greeting}"
                    FontSize="18"
                    TextColor="{Binding IsHighAverage, Converter={StaticResource BoolToColorConverter}}" />
 
-			<Button Text="Додати студента"
-                    Command="{Binding AddStudentCommand}" />
+            <Button Text="Додати студента" Command="{Binding AddStudentCommand}" />
 
-			<BoxView HeightRequest="1" BackgroundColor="LightGray" Margin="0,10" />
+            <BoxView HeightRequest="1" BackgroundColor="LightGray" Margin="0,10" />
 
-			<Label Text="Список студентів" FontAttributes="Bold" />
+            <Label Text="Список студентів" FontAttributes="Bold" />
 
-			<CollectionView ItemsSource="{Binding Students}">
-				<CollectionView.ItemTemplate>
+            <CollectionView ItemsSource="{Binding Students}">
+                <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <HorizontalStackLayout Spacing="8" Padding="0,4">
                             <Label Text="{Binding FullName}" VerticalOptions="Center" />
                             <Label Text="{Binding Group}" VerticalOptions="Center" />
                             <Label Text="{Binding AverageScore, StringFormat='{0:F2}'}" VerticalOptions="Center" />
+                            <Label Text="{Binding DocumentNumber, StringFormat='Док.: {0}'}" VerticalOptions="Center" />
                             <Button Text="Детальніше"
-                FontSize="12"
-                Padding="8,2"
-                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenDetailsCommand}"
-                CommandParameter="{Binding .}" />
+                                    FontSize="12"
+                                    Padding="8,2"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenDetailsCommand}"
+                                    CommandParameter="{Binding .}" />
                             <Button Text="Видалити"
-                                FontSize="12"
-                                Padding="8,2"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCommand}"
-                                CommandParameter="{Binding .}" />
-                            
+                                    FontSize="12"
+                                    Padding="8,2"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCommand}"
+                                    CommandParameter="{Binding .}" />
                         </HorizontalStackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
-			</CollectionView>
+            </CollectionView>
 
-		</VerticalStackLayout>
-	</ScrollView>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
